@@ -2,36 +2,71 @@ package com.marqeton.marqetonapi.model;
 
 import java.util.Date;
 
-public class ProductMultimedia {
-	private Integer id;
-    private String imageUrl;
-    private String videoUrl;
-	private Integer isPrimary;
-    private Date createdOn;
-    private Date updatedOn;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.ForeignKey;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.validation.constraints.NotEmpty;
 
-	public Integer getId() {
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
+@Entity
+@Table(name="tbl_product_multimedia")
+public class ProductMultimedia {
+	
+	@Id
+	@GeneratedValue(strategy=GenerationType.AUTO)
+	private Long id;
+	
+	@Column(name="image")
+    private String image;
+	
+	@Column(name="video")
+    private String video;
+	
+	@Column(name="is_primary")
+	private Integer isPrimary;
+	
+	@Column(name="created_on", nullable=false)
+    private Date createdOn;
+	
+	@Column(name="updated_on", nullable=false)
+    private Date updatedOn;
+	
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name="product_detail_id", nullable = true, updatable = true, insertable = true,foreignKey = @ForeignKey(name = "tbl_product_fk1"))
+	@JsonBackReference(value="productdetail_multimedia")
+	ProductDetail productDetail;
+
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
-	public String getImageUrl() {
-		return imageUrl;
+	public String getImage() {
+		return image;
 	}
 
-	public void setImageUrl(String imageUrl) {
-		this.imageUrl = imageUrl;
+	public void setImage(String image) {
+		this.image = image;
 	}
 
-	public String getVideoUrl() {
-		return videoUrl;
+	public String getVideo() {
+		return video;
 	}
 
-	public void setVideoUrl(String videoUrl) {
-		this.videoUrl = videoUrl;
+	public void setVideo(String video) {
+		this.video = video;
 	}
 
 	public Integer getIsPrimary() {
@@ -56,6 +91,14 @@ public class ProductMultimedia {
 
 	public void setUpdatedOn(Date updatedOn) {
 		this.updatedOn = updatedOn;
+	}
+
+	public ProductDetail getProductDetail() {
+		return productDetail;
+	}
+
+	public void setProductDetail(ProductDetail productDetail) {
+		this.productDetail = productDetail;
 	}
 
 }

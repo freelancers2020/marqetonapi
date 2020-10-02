@@ -1,17 +1,75 @@
-package com.marqeton.marqetonapi.model;
+ package com.marqeton.marqetonapi.model;
 
 import java.util.Date;
+import java.util.List;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
+@Entity
+@Table(name="tbl_category")
 public class Category {
-	private Long id;
-	private String name;
-	private String description;
-	private String imageUrl;
+	
+	@Id
+	@GeneratedValue(strategy=GenerationType.AUTO)
+    private Long id;
+	
+	@Column(name="name", nullable=false)
+    @NotEmpty()
+    private String name;
+	
+	@Column(name="description", nullable=false)
+    @NotEmpty()
+    private String description;
+	
+	@Column(name="images")
+    private String images;
+	
+	@Column(name="sku", nullable=false,unique = true)
+	@NotEmpty()
 	private String sku;
-	private Integer status;
-    private Integer discountPercentage;
-	private Date createdOn;
-	private Date updatedOn;
+	
+	@Column(name="status", nullable=false)
+	@NotNull()
+    private Integer status;
+	
+	@Column(name="percentage_discount", nullable=false)
+    @NotNull()
+    private Integer percentageDiscount;
+	
+	@Column(name="created_on", nullable=false)
+    private Date createdOn;
+	
+	@Column(name="updated_on", nullable=false)
+    private Date updatedOn;
+	
+	@ManyToOne()
+	@JoinColumn(name = "category_id", referencedColumnName = "id")
+	private Category category;
+
+	@OneToMany
+	@JsonBackReference(value = "category_subcategory")
+	@JoinColumn(name = "category_id")
+	private List<Category> subCategory;
+	
+	@ManyToMany(mappedBy = "category")
+	@JsonBackReference(value = "category_product")
+    private List <Product> products;
+	 
 	
 	public Long getId() {
 		return id;
@@ -37,14 +95,15 @@ public class Category {
 		this.description = description;
 	}
 
-	public String getImageUrl() {
-		return imageUrl;
+	public String getImages() {
+		return images;
 	}
 
-	public void setImageUrl(String imageUrl) {
-		this.imageUrl = imageUrl;
+	public void setImages(String images) {
+		this.images = images;
 	}
 
+	
 	public String getSku() {
 		return sku;
 	}
@@ -61,12 +120,12 @@ public class Category {
 		this.status = status;
 	}
 
-	public Integer getDiscountPercentage() {
-		return discountPercentage;
+	public Integer getPercentageDiscount() {
+		return percentageDiscount;
 	}
 
-	public void setDiscountPercentage(Integer discountPercentage) {
-		this.discountPercentage = discountPercentage;
+	public void setPercentageDiscount(Integer percentageDiscount) {
+		this.percentageDiscount = percentageDiscount;
 	}
 
 	public Date getCreatedOn() {
@@ -84,5 +143,31 @@ public class Category {
 	public void setUpdatedOn(Date updatedOn) {
 		this.updatedOn = updatedOn;
 	}
+
+	public Category getCategory() {
+		return category;
+	}
+
+	public void setCategory(Category category) {
+		this.category = category;
+	}
+
+	public List<Category> getSubCategory() {
+		return subCategory;
+	}
+
+	public void setSubCategory(List<Category> subCategory) {
+		this.subCategory = subCategory;
+	}
+
+	public List<Product> getProducts() {
+		return products;
+	}
+
+	public void setProducts(List<Product> products) {
+		this.products = products;
+	}
+	
+	
 
 }
